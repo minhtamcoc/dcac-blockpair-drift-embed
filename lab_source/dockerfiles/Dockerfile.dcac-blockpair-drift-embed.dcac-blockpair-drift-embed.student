@@ -1,0 +1,46 @@
+ARG registry
+FROM labtainers/labtainer.base2
+
+ARG lab
+ARG labdir
+ARG imagedir
+ARG user_name
+ARG password
+ARG apt_source
+ARG version
+
+LABEL version=$version
+ENV APT_SOURCE $apt_source
+ENV DEBIAN_FRONTEND=noninteractive
+RUN /usr/bin/apt-source.sh
+
+ADD $labdir/$imagedir/sys_tar/sys.tar /
+ADD $labdir/sys_$lab.tar.gz /
+
+RUN useradd -ms /bin/bash $user_name
+RUN echo "$user_name:$password" | chpasswd
+RUN adduser $user_name sudo
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    ffmpeg \
+    nano \
+    tar \
+    zip \
+    libglib2.0-0 \
+    libgl1 \
+    && pip3 install --no-cache-dir numpy==1.24.4 opencv-python-headless==4.13.0.92 \
+    && rm -rf /var/lib/apt/lists/*
+
+USER $user_name
+ENV HOME /home/$user_name
+
+ADD $labdir/$imagedir/home_tar/home.tar $HOME
+RUN rm -f $HOME/home.tar
+ADD $labdir/$lab.tar.gz $HOME
+
+USER root
+RUN mkdir -p /home/$user_name/.local/bin /home/$user_name/.local/result /home/$user_name/.local/zip \
+    && chown -R $user_name:$user_name /home/$user_name/.local
+CMD ["/bin/bash", "-c", "exec /sbin/init --log-target=journal 3>&1"]

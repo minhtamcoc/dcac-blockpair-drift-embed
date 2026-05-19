@@ -1,0 +1,4 @@
+Giau tin video bang DC/AC block-pair drift
+
+Open the lab manual:
+file://LAB_DOCS/dcac-blockpair-drift-embed.md

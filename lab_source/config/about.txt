@@ -1,0 +1,3 @@
+Giau tin video bang DC/AC block-pair drift
+
+Sinh vien thuc hanh quy trinh giau va tach thong diep trong video, kiem tra thong so video bang ffmpeg, chay chuong trinh nhung tin, sau do tach lai thong diep tu video da duoc tao.
